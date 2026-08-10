@@ -1,1 +1,14 @@
+name: push event
 
+on: push
+
+jobs:
+  push evnt:
+     runs-on: ubuntu-latest
+     steps:
+       - name: show the chnage automatically
+         run: |
+            echo "event name : $GITHUB_EVENT_NAME"
+            echo "Branch ref : $GITHUB_REF"
+            echo "Commit SHA : $GITHUB_SHA"
+            echo "Pushed by  : $GITHUB_ACTOR"
