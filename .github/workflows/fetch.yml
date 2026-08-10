@@ -1,0 +1,13 @@
+name: run vs users
+
+on : workflow_dispatch
+
+jobs:
+  intro:
+  runs-on: ubuntu-latest
+  steps:
+     -name: check out the repository code
+      users: actions/checkout@v5
+
+     -name: run a shell command
+      run: echo "Files in the repo:" && ls -la
