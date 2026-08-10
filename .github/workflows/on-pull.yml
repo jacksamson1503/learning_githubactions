@@ -1,0 +1,14 @@
+name: on-pull request
+
+on:
+  pull_request:
+    types: [opened, synchronize ,reopened]
+
+jobs:
+  validate-pr:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Describe the pull request
+         run: |
+           echo " event  : $GITHUB_EVENT_NAME"
+           echo "PR base : ${{ github.base_ref }}"
