@@ -1,25 +1,25 @@
 name: 09 - run vs uses
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
 
 jobs:
-
-  # --- intro job: basic uses + run demo ---
   intro:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repository code
-        uses: actions/checkout@v5        # an action published by GitHub
+        uses: actions/checkout@v5
 
       - name: Run a shell command
         run: echo "Files in the repo:" && ls -la
 
-depth-1:
+  depth-1:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout with fetch-depth 1 (shallow - default)
         uses: actions/checkout@v5
         with:
           fetch-depth: 1
+
       - name: Show commit count
         run: echo "Commit count:" && git log --oneline | wc -l
