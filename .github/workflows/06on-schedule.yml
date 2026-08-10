@@ -1,0 +1,21 @@
+#Trigger: schedule (cron)
+# Runs the workflow automatically on a time schedule (like a cron job).
+# Common uses: nightly builds, dependency checks, cle
+
+# CRON formet
+#  *****
+#minute hour date month day
+
+name: 06 - Scheduled Run
+
+on:
+  schedule:
+    - cron: '0 2 * * *'      # every day at 02:00 UTC
+    - cron: '0 9 * * 1'      # every Monday at 09:00 UTC
+
+jobs:
+  scheduled-task:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Nightly housekeeping
+        run: echo "Running scheduled job"
