@@ -1,4 +1,4 @@
-# 10 - actions/checkout
+# actions/checkout
 # By default the runner is EMPTY — your code is NOT there yet.
 # actions/checkout clones your repository onto the runner so later
 # steps can see your files. It is the #1 most-used action.
