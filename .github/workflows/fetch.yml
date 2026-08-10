@@ -13,13 +13,13 @@ jobs:
       - name: Run a shell command
         run: echo "Files in the repo:" && ls -la
 
-  depth-1:
+  depth-0:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout with fetch-depth 1 (shallow - default)
         uses: actions/checkout@v5
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Show commit count
         run: echo "Commit count:" && git log --oneline | wc -l
