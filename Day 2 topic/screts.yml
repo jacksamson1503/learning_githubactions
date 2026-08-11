@@ -1,0 +1,38 @@
+name: serects
+
+on:
+  workflow_dispatch:
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: check weather the serect is avaliable
+        env:
+          API_KEY: ${{ serects.AWS_ACCESS_KEY }}
+        run: |
+          if [ -z "$API_KEY"]; then
+             echo " serect AWS_ACCESS_KEY IS NOT THERE.CHECK THE GITHUB SERECTS"
+          fi
+
+          echo "Srect is avaliable.lenght is {$API_KEY} characters.
+      - name: check weather variable is there in the github
+        env:
+          VAR_KEY: ${{ vars.AWS_VAR_KEY }}
+        run: |
+          if [ -z "$VAR_KEY" ]
+            echo "Varaible is not there in the github"
+          fi
+            echo "Variiable is there and the length is {"$VAR_KEY"}"
+
+# NEVER hard-code passwords, tokens, or API keys in a workflow file.
+# Store them in:  repo Settings -> Secrets and variables -> Actions -> New repository secret
+# Then read them with the `secrets` context: ${{ secrets.NAME }}
+#
+# For this demo, first create a secret named MY_API_KEY with any value.
+#
+# SECURITY NOTES:
+#   * GitHub automatically MASKS secret values in logs (they show as ***).
+#   * Never `echo` a secret directly — pass it via env and use it in a command.
+#   * secrets are NOT passed to workflows triggered by forked-repo pull requests.

@@ -1,0 +1,45 @@
+name: Context demo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  info:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print Repo
+        run: echo "${{ github.repository }}"
+
+      - name: Print User
+        run: echo "${{ github.actor }}"
+
+      - name: Print Branch
+        run: echo "${{ github.ref }}"
+
+      - name: Print ref
+        run: echo "$ {{ github.ref }}"
+
+      - name: Print sha
+        run: echo "$ {{ github.sha }}"
+
+      - name: Print variable
+        run: echo "$ {{ env.APP_NAME}}"
+
+      - name: Print serects
+        run: echo "$ {{ serects.API_KEY}}"
+
+      - name: Print Runner OS
+        run: echo "${{ runner.os }}"
+
+      - name: This is the last point
+        run: echo "This process is completed"
+
+#Contexts and expressions
+# Contexts are read-only objects full of information about the run.
+# Access them with the ${{ ... }} expression syntax.
+# The most useful contexts:
+#   github  -> repo, event, actor, ref, sha, run_number ...
+#   runner  -> os, arch, temp, tool_cache
+#   env     -> your custom environment variables
+#   job / steps -> status & outputs (used more later)
