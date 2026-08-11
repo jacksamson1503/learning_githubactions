@@ -1,0 +1,20 @@
+Combined trigger example
+# A single workflow can listen to MANY events at once.
+# This is the realistic CI setup: run on pushes to main, on every PR,
+# and allow a manual run when needed.
+
+name: 07 - Multiple Triggers
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  react-to-event:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report which event started this run
+        run: echo "This run was triggered by the '$GITHUB_EVENT_NAME' event."
