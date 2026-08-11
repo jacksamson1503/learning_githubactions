@@ -1,5 +1,76 @@
 # GitHub Actions - Learning Notes
 
+## Table of Contents
+
+### Day 1 - GitHub Actions Fundamentals
+
+* What is GitHub Actions?
+* Basic Workflow Structure
+* Workflow Structure
+
+  * name
+  * on
+  * jobs
+* Workflow Triggers
+
+  * workflow_dispatch
+  * push
+  * pull_request
+  * schedule
+* Multiple Triggers
+* Filters
+
+  * Branch Filter
+  * Path Filter
+  * Ignore Paths
+* Runners
+* Steps
+* run
+* uses
+* run vs uses
+* actions/checkout
+* fetch-depth
+* Conditions (if)
+* Variables (`$GITHUB_EVENT_NAME`)
+
+---
+
+### Day 2 - Building Real CI Pipelines
+
+* Environment Variables (env)
+* Variable Scopes
+
+  * Workflow Level
+  * Job Level
+  * Step Level
+* Contexts
+
+  * github
+  * runner
+  * env
+  * secrets
+  * vars
+  * needs
+* Secrets and Variables
+* CI Pipeline
+* Parallel Jobs
+* Job Dependencies (needs)
+* Conditional Execution (if)
+* Status Functions
+
+  * success()
+  * failure()
+  * always()
+  * cancelled()
+* Day 2 Workflow Flow
+* Interview Questions
+
+---
+
+# Day 1 - GitHub Actions Fundamentals
+
+# GitHub Actions - Learning Notes
+
 ## What is GitHub Actions?
 
 GitHub Actions is a CI/CD and automation platform provided by GitHub. It allows you to automate tasks such as building, testing, and deploying applications whenever specific events occur in a repository.
@@ -407,3 +478,506 @@ Topics Learned:
 * Variables (`$GITHUB_EVENT_NAME`)
 
 These are the fundamental building blocks of GitHub Actions and form the foundation for creating CI/CD pipelines.
+
+
+---
+
+# Day 2 - Building Real CI Pipelines
+
+
+---
+
+## Environment Variables (env)
+
+Environment variables are reusable values that can be used throughout a workflow.
+
+Example:
+
+```yaml
+env:
+  APP_NAME: Netflix
+```
+
+Environment variables help avoid repeating the same values multiple times in a workflow.
+
+### Variable Scopes
+
+GitHub Actions supports three levels of environment variables.
+
+#### Workflow Level
+
+Available to all jobs and steps.
+
+```yaml
+env:
+  APP_NAME: Netflix
+```
+
+#### Job Level
+
+Available only inside a specific job.
+
+```yaml
+jobs:
+  build:
+    env:
+      APP_NAME: Amazon
+```
+
+#### Step Level
+
+Available only inside a specific step.
+
+```yaml
+steps:
+  - name: Test
+    env:
+      APP_NAME: Flipkart
+```
+
+### Scope Priority
+
+```text
+Step Level
+   ↓
+Job Level
+   ↓
+Workflow Level
+```
+
+The closest scope always overrides the outer scope.
+
+---
+
+## Contexts
+
+Contexts are built-in objects that provide information about the workflow, repository, runner, and GitHub event.
+
+Syntax:
+
+```yaml
+${{ context.property }}
+```
+
+### Common Contexts
+
+#### github
+
+Repository and workflow information.
+
+```yaml
+${{ github.actor }}
+${{ github.repository }}
+${{ github.ref }}
+${{ github.sha }}
+```
+
+#### runner
+
+Information about the runner.
+
+```yaml
+${{ runner.os }}
+${{ runner.arch }}
+```
+
+#### env
+
+Reads environment variables.
+
+```yaml
+${{ env.APP_NAME }}
+```
+
+#### secrets
+
+Reads repository secrets.
+
+```yaml
+${{ secrets.API_KEY }}
+```
+
+#### vars
+
+Reads repository variables.
+
+```yaml
+${{ vars.COMPANY_NAME }}
+```
+
+#### needs
+
+Reads information from dependent jobs.
+
+```yaml
+${{ needs.build.result }}
+```
+
+### Debugging Contexts
+
+```yaml
+- env:
+    GITHUB_CONTEXT: ${{ toJSON(github) }}
+  run: echo "$GITHUB_CONTEXT"
+```
+
+Useful for viewing all available values inside a context.
+
+---
+
+## Secrets and Variables
+
+Sensitive information should never be hardcoded inside workflow files.
+
+Wrong:
+
+```yaml
+PASSWORD=12345
+```
+
+Correct:
+
+Store credentials inside GitHub Secrets.
+
+### Creating Secrets
+
+```text
+Repository
+↓
+Settings
+↓
+Secrets and Variables
+↓
+Actions
+↓
+New Repository Secret
+```
+
+Example:
+
+```text
+AWS_ACCESS_KEY
+```
+
+Usage:
+
+```yaml
+env:
+  AWS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+```
+
+Secrets are automatically masked in workflow logs.
+
+### Repository Variables
+
+Variables are used for non-sensitive values.
+
+Example:
+
+```text
+COMPANY_NAME=Netflix
+```
+
+Usage:
+
+```yaml
+${{ vars.COMPANY_NAME }}
+```
+
+### Secrets vs Variables
+
+| Feature        | Secrets | Variables |
+| -------------- | ------- | --------- |
+| Encrypted      | Yes     | No        |
+| Hidden in Logs | Yes     | No        |
+| Passwords      | Yes     | No        |
+| URLs           | No      | Yes       |
+| API Keys       | Yes     | No        |
+
+---
+
+## CI Pipeline
+
+CI stands for Continuous Integration.
+
+The purpose of CI is to automatically validate code whenever developers push changes.
+
+### Typical CI Flow
+
+```text
+Developer Pushes Code
+        ↓
+Checkout Source Code
+        ↓
+Install Dependencies
+        ↓
+Lint Code
+        ↓
+Run Tests
+        ↓
+Pass or Fail
+```
+
+### Example Workflow
+
+```yaml
+name: Node CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+
+      - run: npm run lint
+
+      - run: npm test
+```
+
+---
+
+## Parallel Jobs
+
+By default, jobs without dependencies run simultaneously.
+
+Example:
+
+```yaml
+jobs:
+  build:
+  test:
+  security:
+```
+
+Execution:
+
+```text
+         Event
+           │
+ ┌─────────┼─────────┐
+ │         │         │
+Build     Test    Security
+```
+
+### Important Points
+
+* Each job runs on a separate runner.
+* Jobs do not share files.
+* Jobs do not share installed software.
+* Jobs do not share environment variables.
+
+---
+
+## Job Dependencies (needs)
+
+The `needs` keyword creates dependencies between jobs.
+
+Example:
+
+```yaml
+test:
+  needs: build
+```
+
+Execution:
+
+```text
+Build
+  ↓
+Test
+```
+
+### Multiple Dependencies
+
+```yaml
+deploy:
+  needs:
+    - test
+    - security
+```
+
+Execution:
+
+```text
+Build
+ ↓
+ ┌───────┬───────┐
+ │       │       │
+Test  Security
+ │       │
+ └───┬───┘
+     ↓
+ Deploy
+```
+
+### Key Points
+
+* A job waits until all dependencies finish.
+* Failed dependencies cause downstream jobs to be skipped.
+* Circular dependencies are not allowed.
+
+---
+
+## Conditional Execution (if)
+
+The `if` condition controls whether a job or step should run.
+
+Example:
+
+```yaml
+if: github.ref == 'refs/heads/main'
+```
+
+Runs only on the main branch.
+
+### Operators
+
+```yaml
+==
+!=
+&&
+||
+!
+```
+
+### Common Functions
+
+```yaml
+contains()
+startsWith()
+endsWith()
+```
+
+Example:
+
+```yaml
+if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+```
+
+Meaning:
+
+```text
+Push Event
+AND
+Main Branch
+```
+
+Only then execute.
+
+---
+
+## Status Functions
+
+Status functions allow workflows to react based on previous job results.
+
+### success()
+
+Runs when all previous jobs succeed.
+
+```yaml
+if: success()
+```
+
+### failure()
+
+Runs when a previous job fails.
+
+```yaml
+if: failure()
+```
+
+Example:
+
+```text
+Build Failed
+↓
+Send Notification
+```
+
+### always()
+
+Runs regardless of success or failure.
+
+```yaml
+if: always()
+```
+
+Example:
+
+```text
+Upload Logs
+Cleanup Resources
+Destroy Infrastructure
+```
+
+### cancelled()
+
+Runs only when a workflow is cancelled.
+
+```yaml
+if: cancelled()
+```
+
+### Default Behavior
+
+Every job and step automatically has:
+
+```yaml
+if: success()
+```
+
+This is why downstream jobs become skipped when dependencies fail.
+
+---
+
+## Day 2 Workflow Flow
+
+```text
+Push Code
+    ↓
+Trigger Workflow
+    ↓
+Read Variables (env)
+    ↓
+Read Contexts
+    ↓
+Read Secrets
+    ↓
+Checkout Code
+    ↓
+Install Dependencies
+    ↓
+Run Lint
+    ↓
+Run Tests
+    ↓
+Execute Parallel Jobs
+    ↓
+Apply Dependencies (needs)
+    ↓
+Evaluate Conditions (if)
+    ↓
+Check Status Functions
+    ↓
+Deploy Application
+```
+
+---
+
+
+
+---
+
+
