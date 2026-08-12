@@ -980,4 +980,355 @@ Deploy Application
 
 ---
 
+# GitHub Actions - Learning Summary (12-Aug-2026)
+
+Today I covered and practiced the following advanced GitHub Actions concepts.
+
+---
+
+## 1. Job Outputs
+
+### Purpose
+Used to pass small values from one job to another job.
+
+### Common Use Cases
+- Version Number
+- Docker Image Tag
+- Build URL
+- Timestamp
+- Application Name
+
+### Flow
+
+```text
+Job 1
+  ↓
+Create Output
+  ↓
+Job 2
+  ↓
+Use Output
+```
+
+### Key Points
+- Small values only
+- Uses `$GITHUB_OUTPUT`
+- Step must have an `id`
+- Job must define `outputs`
+- Access using `needs.<job>.outputs.<value>`
+
+---
+
+## 2. Matrix Strategy
+
+### Purpose
+Run the same job multiple times with different values.
+
+### Example
+
+```text
+NodeJS 18
+NodeJS 20
+NodeJS 22
+```
+
+### Flow
+
+```text
+One Job
+   ↓
+Multiple Runs
+
+Run 1 → Node 18
+Run 2 → Node 20
+Run 3 → Node 22
+```
+
+### Real Use Cases
+- Multiple NodeJS versions
+- Multiple Python versions
+- Multiple Operating Systems
+- Multiple Environments
+
+---
+
+## 3. Cache
+
+### Purpose
+Store dependencies and reuse them in future workflow runs.
+
+### Flow
+
+```text
+Run 1
+ ↓
+Download Packages
+ ↓
+Save Cache
+
+Run 2
+ ↓
+Use Cache
+ ↓
+Faster Execution
+```
+
+### Benefits
+- Faster Builds
+- Reduced Download Time
+- Better Runner Efficiency
+
+---
+
+## 4. Artifacts
+
+### Purpose
+Transfer files between jobs.
+
+### Common Use Cases
+- Build Files
+- ZIP Files
+- Test Reports
+- Logs
+- Application Packages
+
+### Flow
+
+```text
+Job 1
+ ↓
+Upload Artifact
+ ↓
+GitHub Storage
+ ↓
+Job 2
+ ↓
+Download Artifact
+```
+
+### Difference
+
+```text
+Outputs   → Small Values
+Artifacts → Files
+```
+
+---
+
+## 5. Reusable Workflows
+
+### Purpose
+Create a workflow once and reuse it across multiple repositories or workflows.
+
+### Flow
+
+```text
+Main Workflow
+      ↓
+Reusable Workflow
+```
+
+### Benefits
+- Less Duplicate Code
+- Easy Maintenance
+- Standardized Pipelines
+
+---
+
+## 6. Environments & Approvals
+
+### Purpose
+Protect deployments using manual approvals.
+
+### Example
+
+```text
+Production Environment
+       ↓
+Approval Required
+       ↓
+Deploy
+```
+
+### Benefits
+- Production Protection
+- Approval Before Deployment
+- Prevent Accidental Deployments
+
+---
+
+## 7. Concurrency
+
+### Purpose
+Cancel older workflow runs and keep only the latest workflow running.
+
+### Flow
+
+```text
+Push 1 → Running
+
+Push 2 → Cancel Push 1
+
+Push 3 → Cancel Push 2
+
+Push 3 Continues
+```
+
+### Benefits
+- Avoid Duplicate Deployments
+- Save Runner Time
+- Deploy Latest Code Only
+
+---
+
+## 8. Self-Hosted Runner
+
+### Purpose
+Run workflows on company-owned servers instead of GitHub-hosted runners.
+
+### Flow
+
+```text
+GitHub
+   ↓
+Company Server
+   ↓
+Run Workflow
+```
+
+### Benefits
+- Access Internal Resources
+- Private Network Connectivity
+- Full Infrastructure Control
+
+---
+
+## 9. Token Permissions
+
+### Purpose
+Control what the workflow's `GITHUB_TOKEN` can access.
+
+### Examples
+
+```yaml
+permissions:
+  contents: read
+```
+
+```text
+Read Repository Only
+```
+
+```yaml
+permissions:
+  contents: write
+```
+
+```text
+Read + Modify Repository
+```
+
+### Benefits
+- Improved Security
+- Least Privilege Access
+
+---
+
+## 10. Timeout
+
+### Purpose
+Automatically stop long-running jobs.
+
+### Example
+
+```yaml
+timeout-minutes: 10
+```
+
+### Flow
+
+```text
+Job Running
+     ↓
+10 Minutes Reached
+     ↓
+Job Stopped
+```
+
+### Benefits
+- Prevents Stuck Jobs
+- Saves Runner Resources
+
+---
+
+## 11. Continue-on-Error
+
+### Purpose
+Continue the workflow even if a step fails.
+
+### Flow
+
+```text
+Step 1 Success
+      ↓
+Step 2 Failed
+      ↓
+Continue Workflow
+      ↓
+Step 3 Runs
+```
+
+### Benefits
+- Ignore Non-Critical Failures
+- Workflow Continues Execution
+
+---
+
+# Key Concepts Learned Today
+
+| Topic | Purpose |
+|---------|---------|
+| Job Outputs | Pass small values between jobs |
+| Matrix | Run same job multiple times |
+| Cache | Speed up workflow execution |
+| Artifacts | Transfer files between jobs |
+| Reusable Workflows | Reuse workflow logic |
+| Environments | Approval before deployment |
+| Concurrency | Cancel old workflow runs |
+| Self-Hosted Runners | Run on company servers |
+| Permissions | Control token access |
+| Timeout | Stop long-running jobs |
+| Continue-on-Error | Continue after failure |
+
+---
+
+## Learning Status
+
+✅ Job Outputs
+
+✅ Matrix Strategy
+
+✅ Cache
+
+✅ Artifacts
+
+✅ Reusable Workflows
+
+✅ Environments & Approvals
+
+✅ Concurrency
+
+✅ Self-Hosted Runners
+
+✅ Token Permissions
+
+✅ Timeout
+
+✅ Continue-on-Error
+
+---
+
+### GitHub Actions Progress
+
+
 
