@@ -1,0 +1,15 @@
+name: Timeout Demo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 1
+
+    steps:
+      - run: sleep 120
+
+#workflow will stop after the 1 minutes

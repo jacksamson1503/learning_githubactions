@@ -1,0 +1,16 @@
+name: Continue On Error
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Fail Step
+        continue-on-error: true
+        run: exit 1
+
+      - name: Next Step
+        run: echo "Workflow Continued"

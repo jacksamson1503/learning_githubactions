@@ -1,0 +1,17 @@
+name: Concurrency Demo
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          echo "Deploying..."
+          sleep 60

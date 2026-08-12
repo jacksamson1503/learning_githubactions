@@ -1,0 +1,13 @@
+name: Self Hosted Runner
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: self-hosted
+
+    steps:
+      - run: echo "Running on Company Server"
+
+#This requires a self-hosted runner configured in GitHub.
