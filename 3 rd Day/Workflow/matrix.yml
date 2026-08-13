@@ -1,0 +1,17 @@
+name: Matrix Demo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        env: [dev, test, prod]
+
+    steps:
+      - name: Show Environment
+        run: |
+          echo "Deploying to ${{ matrix.env }}"
