@@ -1,0 +1,27 @@
+name: Simple job output
+
+on:
+  workflow_dispacth:
+
+jobs:
+  first_job:
+    runs-on: ubuntu-latest
+
+  output:
+    username: ${{ setps.jack.outputs.name }}
+
+  steps:
+    - name: creating an name
+      id: jack
+      run: |
+        echo "name=jacksasmon" >> $GITHUB_OUTPUT
+
+  second_job:
+    needs: first_job
+
+    runs-on: ubuntu-latest
+  
+    steps:
+      - name: print name
+        run: |
+          echo: "hello ${{ needs.first_job.outputs.username }}"
