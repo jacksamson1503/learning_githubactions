@@ -1,0 +1,32 @@
+name: Artifact Demo
+
+on:
+  workflow_dispacth:
+
+jobs:
+  create_file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: create an report
+        run: |
+          echo: "Github learning lesson" > report.txt
+
+      - name: upload an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: learning-report
+          path: report.txt
+
+  read_file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Donwlaod artifact
+        uses: actions/downlaod-artifact@v4
+        with:
+          name: learning-report
+
+      - name: Read the file
+        run: | 
+          cat report.txt
