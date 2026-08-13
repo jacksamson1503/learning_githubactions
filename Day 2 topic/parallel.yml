@@ -1,0 +1,30 @@
+name: 16 - Parallel Jobs
+
+on: workflow_dispatch
+
+jobs:
+  fast-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Finish quickly
+        run: |
+          echo "fast-job started at $(date +%T)"
+          sleep 5
+          echo "fast-job done"
+
+  slow-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Take my time
+        run: |
+          echo "slow-job started at $(date +%T)"
+          sleep 20
+          echo "slow-job done"
+
+  isolated-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Write a file on THIS runner only
+        run: |
+          echo "isolated-job wrote /tmp/note.txt on its own machine."
+          echo "Completed the job here."
